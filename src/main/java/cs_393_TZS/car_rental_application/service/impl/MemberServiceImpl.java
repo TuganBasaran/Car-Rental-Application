@@ -19,5 +19,29 @@ public class MemberServiceImpl implements MemberService {
         this.memberRepository = memberRepository;
     }
 
-    
+
+    @Override
+    public Member registerMember(Member member) {
+        return null;
+    }
+
+    @Override
+    public Member updateMember(Long id, Member member) {
+        return null;
+    }
+
+    @Override
+    public Member getMemberById(Long id) {
+        return null;
+    }
+
+    @Override
+    public List<Member> getAllMembers() {
+        return List.of();
+    }
+
+    @Override
+    public void deleteMember(Long id) {
+
+    }
 }

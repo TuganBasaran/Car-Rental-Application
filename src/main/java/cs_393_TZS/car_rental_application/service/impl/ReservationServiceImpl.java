@@ -19,4 +19,28 @@ public class ReservationServiceImpl implements ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
+    @Override
+    public Reservation createReservation(Reservation reservation) {
+        return null;
+    }
+
+    @Override
+    public Reservation updateReservation(Long id, Reservation reservation) {
+        return null;
+    }
+
+    @Override
+    public Reservation getReservationById(Long id) {
+        return null;
+    }
+
+    @Override
+    public List<Reservation> getAllReservations() {
+        return List.of();
+    }
+
+    @Override
+    public void cancelReservation(Long id) {
+
+    }
 }

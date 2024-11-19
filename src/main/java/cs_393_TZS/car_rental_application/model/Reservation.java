@@ -1,7 +1,6 @@
 package cs_393_TZS.car_rental_application.model;
 import jakarta.persistence.*;
 
-import java.beans.Transient;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
