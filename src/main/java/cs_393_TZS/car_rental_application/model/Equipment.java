@@ -1,4 +1,6 @@
 package cs_393_TZS.car_rental_application.model;
+import java.util.List;
+
 import jakarta.persistence.*;
 /*
 Stores details about the various types of equipment that members can add to their
@@ -23,6 +25,9 @@ public class Equipment {
 
     @Column(nullable = false)
     private double price;
+
+    @ManyToMany(mappedBy = "equipmentList")
+    private List<Reservation> reservations;
 
     public Equipment() {
     }

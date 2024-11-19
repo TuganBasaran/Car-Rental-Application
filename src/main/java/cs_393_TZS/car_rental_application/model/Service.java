@@ -1,6 +1,7 @@
 package cs_393_TZS.car_rental_application.model;
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.Objects;
 
 /*
@@ -22,6 +23,9 @@ public class Service {
 
     @Column(nullable = false)
     private double price;
+
+    @ManyToMany(mappedBy = "serviceList")
+    private List<Reservation> reservations;
 
     public Service() {
     }

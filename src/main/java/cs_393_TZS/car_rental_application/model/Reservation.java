@@ -1,7 +1,9 @@
 package cs_393_TZS.car_rental_application.model;
 import jakarta.persistence.*;
 
+import java.beans.Transient;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 /*
@@ -48,6 +50,32 @@ public class Reservation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId",nullable = false)
     private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Equipment equipment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Service service;
+
+    @Transient
+    private double totalCost;
+
+    @ManyToMany
+    @JoinTable(
+        name = "reservation_equipment",
+        joinColumns = @JoinColumn(name = "reservation_id"),
+        inverseJoinColumns = @JoinColumn(name = "equipment_id")
+    )
+    private List<Equipment> equipmentList;
+
+    @ManyToMany
+    @JoinTable(
+        name = "reservation_service",
+        joinColumns = @JoinColumn(name = "reservation_id"),
+        inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+    private List<Service> serviceList;
+
 
     public Reservation() {
     }
