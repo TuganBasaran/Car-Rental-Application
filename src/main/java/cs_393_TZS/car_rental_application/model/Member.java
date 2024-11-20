@@ -35,7 +35,7 @@ public class Member {
     @Column(nullable = false,unique = true)
     private String drivingLicenseNumber;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private List<Reservation> reservations = new ArrayList<>();
 
     public Member() {

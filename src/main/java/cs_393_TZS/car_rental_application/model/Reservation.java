@@ -30,13 +30,13 @@ public class Reservation {
     private Long id; */
 
     @Id
-    @GeneratedValue(strategy =  GenerationType.AUTO)
     private String reservationNumber;
-
 
     private LocalDateTime creationDate;
     private  LocalDateTime pickUpDate;
     private LocalDateTime dropOffDate;
+
+
 
     @ManyToOne
     @JoinColumn(name = "pickUpLocationId",nullable = false)
@@ -46,20 +46,24 @@ public class Reservation {
     @JoinColumn(name = "dropOffLocationId",nullable = false)
     private Location dropOffLocation;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private Car car;
+
     private LocalDateTime returnDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ReservationStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId",nullable = false)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Equipment equipment;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Service service;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private Equipment equipment;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private Service service;
 
     @Transient
     private double totalCost;
@@ -84,7 +88,12 @@ public class Reservation {
     public Reservation() {
     }
 
-    public Reservation(LocalDateTime creationDate, LocalDateTime pickUpDate, LocalDateTime dropOffDate, Location pickUpLocation, Location dropOffLocation, LocalDateTime returnDate, ReservationStatus status, Member member) {
+
+
+    public Reservation(LocalDateTime creationDate, LocalDateTime pickUpDate, LocalDateTime dropOffDate,
+                       Location pickUpLocation, Location dropOffLocation, LocalDateTime returnDate,
+                       ReservationStatus status, Member member, List<Equipment> equipmentList, List<Service> serviceList, Car car) {
+        this.reservationNumber = generateReservationNumber();
         this.creationDate = creationDate;
         this.pickUpDate = pickUpDate;
         this.dropOffDate = dropOffDate;
@@ -93,15 +102,18 @@ public class Reservation {
         this.returnDate = returnDate;
         this.status = status;
         this.member = member;
+        this.equipmentList = equipmentList;
+        this.serviceList = serviceList;
+        this.car = car;
     }
 
 
     //if we want to generate automatically reservation number
     // 8 digit string
     //UUID kullanmak daha safe miş o yüzden bunu kullandım yoksa random kullanmıştım
-    @PrePersist //before saving to database
-    public void generateReservationNumber(){
-        this.reservationNumber = UUID.randomUUID().toString().substring(0, 8).toUpperCase(); // A1B2C3D4 gibi bir şey oluşturacak
+
+    public String generateReservationNumber(){
+        return UUID.randomUUID().toString().substring(0, 8).toUpperCase(); // A1B2C3D4 gibi bir şey oluşturacak
     }
 
     public String getReservationNumber() {

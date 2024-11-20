@@ -20,16 +20,16 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String code;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String address;
 
-    @OneToMany(mappedBy = "pickUpLocation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "pickUpLocation", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private List<Reservation> pickUpReservations;
 
-    @OneToMany(mappedBy = "dropOffLocation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "dropOffLocation", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private List<Reservation> dropOffReservations;
 
     public Location() {

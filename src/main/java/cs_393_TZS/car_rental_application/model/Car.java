@@ -2,6 +2,7 @@ package cs_393_TZS.car_rental_application.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.Objects;
 
 /*
@@ -50,6 +51,10 @@ public class Car {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CarStatus status; // Enum for car statuses
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Reservation reservation;
+
 
     public Car() {
     }
