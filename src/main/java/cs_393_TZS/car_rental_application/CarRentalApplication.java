@@ -6,7 +6,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableJpaRepositories("cs_393_TZS.car_rental_application.repository")
 public class CarRentalApplication {
 
 	public static void main(String[] args) {
