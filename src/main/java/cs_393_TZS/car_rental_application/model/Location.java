@@ -15,11 +15,9 @@ Each location has a code and a name. Suck as:
  */
 @Entity
 public class Location {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, unique = true)
     private String code;
 
     @Column(nullable = false)
@@ -43,13 +41,6 @@ public class Location {
         this.address = address;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getCode() {
         return code;
@@ -89,30 +80,6 @@ public class Location {
 
     public void setDropOffReservations(List<Reservation> dropOffReservations) {
         this.dropOffReservations = dropOffReservations;
-    }
-
-    @Override
-    public String toString() {
-        return "Location{" +
-                "id=" + id +
-                ", code='" + code + '\'' +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                '}';
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Location location = (Location) o;
-        return id != null && id.equals(location.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
     }
 
 }
