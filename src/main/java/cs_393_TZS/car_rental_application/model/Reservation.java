@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+
 /*
 Responsible for managing reservations for a car.
 Reservation will have
@@ -24,11 +25,15 @@ If reservation completed, same car can be used for another reservation
 
 @Entity
 public class Reservation {
-    @Id
+    /* @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; */
 
+    @Id
+    @GeneratedValue(strategy =  GenerationType.AUTO)
     private String reservationNumber;
+
+
     private LocalDateTime creationDate;
     private  LocalDateTime pickUpDate;
     private LocalDateTime dropOffDate;
@@ -133,7 +138,7 @@ public class Reservation {
 
     public void setDropOffDate(LocalDateTime dropOffDate) {
         if (dropOffDate.isBefore(pickUpDate)) {
-            throw new IllegalArgumentException("Invalid date! Dropoff date can't be before pickup date.");
+            throw new IllegalArgumentException("Invalid date! Drop off date can't be before pickup date.");
         }
         this.dropOffDate = dropOffDate;
     }
@@ -160,7 +165,7 @@ public class Reservation {
 
     public void setReturnDate(LocalDateTime returnDate) {
         if(returnDate!=null  && returnDate.isBefore(dropOffDate)){
-            throw new IllegalArgumentException("Invalid date! Return date can't be before dropoff date.");
+            throw new IllegalArgumentException("Invalid date! Return date can't be before drop off date.");
         }
         this.returnDate = returnDate;
     }
@@ -181,39 +186,7 @@ public class Reservation {
         this.member = member;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
 
-
-    @Override
-    public String toString() {
-        return "Reservation{" +
-                "id=" + id +
-                ", reservationNumber='" + reservationNumber + '\'' +
-                ", creationDate=" + creationDate +
-                ", pickUpDate=" + pickUpDate +
-                ", dropOffDate=" + dropOffDate +
-                ", status=" + status +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Reservation that = (Reservation) o;
-        return id != null && id.equals(that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
 
 }
