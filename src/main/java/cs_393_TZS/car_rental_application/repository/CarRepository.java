@@ -1,6 +1,5 @@
 package cs_393_TZS.car_rental_application.repository;
 
-import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import cs_393_TZS.car_rental_application.model.Car;
 import cs_393_TZS.car_rental_application.model.CarStatus;

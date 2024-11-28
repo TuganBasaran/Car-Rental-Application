@@ -32,7 +32,7 @@ public class Car {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String barcode;
+    private Long barcode;
 
     @Column(nullable = false)
     private String licensePlate;
@@ -59,7 +59,9 @@ public class Car {
     public Car() {
     }
 
-    public Car(String barcode, String licensePlate, int passengerCapacity, String brand, String model, double mileage, String transmissionType, double dailyPrice, CarType type, CarStatus status) {
+    public Car(Long barcode, String licensePlate, int passengerCapacity,
+               String brand, String model, double mileage, String transmissionType,
+               double dailyPrice, CarType type, CarStatus status) {
         this.barcode = barcode;
         this.licensePlate = licensePlate;
         this.passengerCapacity = passengerCapacity;
@@ -75,12 +77,20 @@ public class Car {
     //GETTER AND SETTERS
 
 
-    public String getBarcode() {
+    public Long getBarcode() {
         return barcode;
     }
 
-    public void setBarcode(String barcode) {
+    public void setBarcode(Long barcode) {
         this.barcode = barcode;
+    }
+
+    public Reservation getReservation() {
+        return reservation;
+    }
+
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
     }
 
     public String getLicensePlate() {

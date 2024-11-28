@@ -18,7 +18,7 @@ public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String code;
+    private Long code;
 
     @Column(nullable = false, unique = true)
     private String name;
@@ -35,18 +35,17 @@ public class Location {
     public Location() {
     }
 
-    public Location(String code, String name, String address) {
+    public Location(Long code, String name, String address) {
         this.code = code;
         this.name = name;
         this.address = address;
     }
 
-
-    public String getCode() {
+    public Long getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(Long code) {
         this.code = code;
     }
 
