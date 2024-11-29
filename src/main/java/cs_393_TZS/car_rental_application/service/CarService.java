@@ -17,43 +17,44 @@ public class CarService {
         this.carRepository = carRepository;
     }
 
-    public List<Car> findAvailableCars() {
-        return carRepository.findByStatus(CarStatus.AVAILABLE);
-    }
+//    public List<Car> findAvailableCars() {
+//        return carRepository.findByStatus(CarStatus.AVAILABLE);
+//    }
+//
+//    public List<Car> findReservedCars() {
+//        return carRepository.findByStatus(CarStatus.RESERVED);
+//    }
+//
+//    public List<Car> findLoanedCars() {
+//        return carRepository.findByStatus(CarStatus.LOANED);
+//    }
+//
+//    public List<Car> findLostCars() {
+//        return carRepository.findByStatus(CarStatus.LOST);
+//    }
+//
+//    public List<Car> findBeingServicedCars() {
+//        return carRepository.findByStatus(CarStatus.BEING_SERVICED);
+//    }
 
-    public List<Car> findReservedCars() {
-        return carRepository.findByStatus(CarStatus.RESERVED);
-    }
-
-    public List<Car> findLoanedCars() {
-        return carRepository.findByStatus(CarStatus.LOANED);
-    }
-
-    public List<Car> findLostCars() {
-        return carRepository.findByStatus(CarStatus.LOST);
-    }
-
-    public List<Car> findBeingServicedCars() {
-        return carRepository.findByStatus(CarStatus.BEING_SERVICED);
-    }
-
-    public List<Car> findCarsByStatus(CarStatus status) {
+    //TODO Business Rule: Search Only Available Cars and rented (loaned/reserved)
+    public List<Car> findByStatus(CarStatus status) {
         return carRepository.findByStatus(status);
     }
+
+    public List<Car> findByBarcode(Long barcode) {return carRepository.findByBarcode(barcode);}
 
     public Car saveCar(Car car){
         return carRepository.save(car);
     }
 
+    //Delete car
     public void deleteCar(Long barcode) {
         Car car = carRepository.findById(barcode).orElseThrow(() -> new CarNotFoundException("No car with the given barcode:  " + barcode));
 
         if (car.getStatus() != CarStatus.AVAILABLE) {
             throw new IllegalArgumentException("You can only delete AVAILABLE cars!" + car.getStatus());
         }
-
         carRepository.delete(car);
     }
-
-
 }

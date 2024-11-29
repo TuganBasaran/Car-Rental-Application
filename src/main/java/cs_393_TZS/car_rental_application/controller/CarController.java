@@ -23,32 +23,32 @@ public class CarController {
 
     @GetMapping("/available")
     public ResponseEntity<List<Car>> getAvailableCars() {
-        return ResponseEntity.ok(carService.findAvailableCars());
+        return ResponseEntity.ok(carService.findByStatus(CarStatus.AVAILABLE));
     }
 
     @GetMapping("/reserved")
     public ResponseEntity<List<Car>> getReservedCars() {
-        return ResponseEntity.ok(carService.findReservedCars());
+        return ResponseEntity.ok(carService.findByStatus(CarStatus.AVAILABLE));
     }
 
     @GetMapping("/being-serviced")
     public ResponseEntity<List<Car>> getBeingServicedCars() {
-        return ResponseEntity.ok(carService.findBeingServicedCars());
+        return ResponseEntity.ok(carService.findByStatus(CarStatus.BEING_SERVICED));
     }
 
     @GetMapping("/loaned")
     public ResponseEntity<List<Car>> getLoanedCars() {
-        return ResponseEntity.ok(carService.findLoanedCars());
+        return ResponseEntity.ok(carService.findByStatus(CarStatus.LOANED));
     }
 
     @GetMapping("/lost")
     public ResponseEntity<List<Car>> getLostCars() {
-        return ResponseEntity.ok(carService.findLostCars());
+        return ResponseEntity.ok(carService.findByStatus(CarStatus.LOST));
     }
 
     @GetMapping("/{status}")
     public ResponseEntity<?> getCarsByStatus(@PathVariable CarStatus status) {
-        List<Car> cars = carService.findCarsByStatus(status);
+        List<Car> cars = carService.findByStatus(status);
 
         if (cars.isEmpty()) {
             return ResponseEntity.status(404).body("There is no car with the status: " + status);

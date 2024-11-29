@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface CarRepository extends JpaRepository<Car, Long>{
     List<Car> findByStatus(CarStatus status);
+    List<Car> findByBarcode(Long barcode);
 }
 
 
