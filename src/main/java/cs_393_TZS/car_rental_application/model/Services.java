@@ -2,7 +2,6 @@ package cs_393_TZS.car_rental_application.model;
 import jakarta.persistence.*;
 
 import java.util.List;
-import java.util.Objects;
 
 /*
 Stores details about the various types of service that members can add to their
@@ -13,7 +12,7 @@ reservation, such as :
 Each service has a name and price. Price is not daily
  */
 @Entity
-public class Service {
+public class Services {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,10 +26,10 @@ public class Service {
     @ManyToMany(mappedBy = "serviceList")
     private List<Reservation> reservations;
 
-    public Service() {
+    public Services() {
     }
 
-    public Service(String name, double price) {
+    public Services(String name, double price) {
         this.name = name;
         this.price = price;
     }

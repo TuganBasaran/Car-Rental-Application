@@ -3,7 +3,6 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 /*
@@ -82,7 +81,7 @@ public class Reservation {
         joinColumns = @JoinColumn(name = "reservation_id"),
         inverseJoinColumns = @JoinColumn(name = "service_id")
     )
-    private List<Service> serviceList;
+    private List<Services> serviceList;
 
 
     public Reservation() {
@@ -92,7 +91,7 @@ public class Reservation {
 
     public Reservation(LocalDateTime creationDate, LocalDateTime pickUpDate, LocalDateTime dropOffDate,
                        Location pickUpLocation, Location dropOffLocation, LocalDateTime returnDate,
-                       ReservationStatus status, Member member, List<Equipment> equipmentList, List<Service> serviceList, Car car) {
+                       ReservationStatus status, Member member, List<Equipment> equipmentList, List<Services> serviceList, Car car) {
         this.reservationNumber = generateReservationNumber();
         this.creationDate = creationDate;
         this.pickUpDate = pickUpDate;
