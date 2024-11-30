@@ -32,8 +32,7 @@ public class Equipment {
     public Equipment() {
     }
 
-    public Equipment(Long id, String name, double price) {
-        this.id = id;
+    public Equipment(String name, double price) {
         this.name = name;
         this.price = price;
     }
