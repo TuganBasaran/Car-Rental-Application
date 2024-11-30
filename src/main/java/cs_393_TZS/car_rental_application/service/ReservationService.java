@@ -78,4 +78,10 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
+
+    //delete all reservations
+    public void deleteAllReservations() {
+        reservationRepository.deleteAll();
+    }
+
 }
