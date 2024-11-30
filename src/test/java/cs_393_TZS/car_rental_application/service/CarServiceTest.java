@@ -3,6 +3,8 @@ package cs_393_TZS.car_rental_application.service;
 import cs_393_TZS.car_rental_application.model.Car;
 import cs_393_TZS.car_rental_application.model.CarStatus;
 import cs_393_TZS.car_rental_application.model.CarType;
+import cs_393_TZS.car_rental_application.repository.CarRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -55,4 +57,8 @@ class CarServiceTest {
         assertTrue(foundCars.isEmpty());
     }
 
+    @AfterEach
+    void deleteAll(){
+        carService.deleteAll();
+    }
 }

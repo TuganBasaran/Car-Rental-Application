@@ -37,7 +37,7 @@ public class CarService {
 //        return carRepository.findByStatus(CarStatus.BEING_SERVICED);
 //    }
 
-    //TODO Business Rule: Search Only Available Cars and rented (loaned/reserved)
+    //Business Rule: Search Only Available Cars and rented (loaned/reserved)
     public List<Car> findByStatus(CarStatus status) {
         return carRepository.findByStatus(status);
     }
@@ -56,5 +56,9 @@ public class CarService {
             throw new IllegalArgumentException("You can only delete AVAILABLE cars!" + car.getStatus());
         }
         carRepository.delete(car);
+    }
+
+    public void deleteAll(){
+        carRepository.deleteAll();
     }
 }
