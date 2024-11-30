@@ -35,8 +35,7 @@ public class Location {
     public Location() {
     }
 
-    public Location(Long code, String name, String address) {
-        this.code = code;
+    public Location(String name, String address) {
         this.name = name;
         this.address = address;
     }
