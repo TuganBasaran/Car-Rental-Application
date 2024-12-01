@@ -15,10 +15,17 @@ public class MemberService {
     @Autowired
     private MemberRepository memberRepository;
 
-    Member saveMember(Member member){
+    public Member saveMember(Member member){
         return memberRepository.save(member);
     }
 
+
+    public Member findMemberById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No member found with ID: " + id));
+    }
+
+    /*
     Optional<Member> findMemberById(Long id){
         try{
             return memberRepository.findById(id);
@@ -28,11 +35,21 @@ public class MemberService {
 
     }
 
-    void deleteMemberById(Long id){
+     */
+
+    public List<Member> findAllMembers(){
+        return memberRepository.findAll();
+    }
+
+
+    public void deleteMemberById(Long id) {
+        if (!memberRepository.existsById(id)) {
+            throw new IllegalArgumentException("No such id: " + id);
+        }
         memberRepository.deleteById(id);
     }
 
-    void deleteAll(){
+    public void deleteAll(){
         memberRepository.deleteAll();
     }
 }

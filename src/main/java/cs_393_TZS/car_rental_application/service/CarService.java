@@ -1,12 +1,15 @@
 package cs_393_TZS.car_rental_application.service;
 
+import cs_393_TZS.car_rental_application.DTO.CarDTO;
 import cs_393_TZS.car_rental_application.exception.CarNotFoundException;
+import cs_393_TZS.car_rental_application.model.CarType;
 import org.springframework.stereotype.Service;
 import cs_393_TZS.car_rental_application.model.Car;
 import cs_393_TZS.car_rental_application.model.CarStatus;
 import cs_393_TZS.car_rental_application.repository.CarRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CarService {
@@ -56,6 +59,51 @@ public class CarService {
             throw new IllegalArgumentException("You can only delete AVAILABLE cars!" + car.getStatus());
         }
         carRepository.delete(car);
+    }
+
+    public CarDTO toCarDTO(Car car) {
+        return new CarDTO(
+                car.getBrand(),
+                car.getModel(),
+                car.getType().toString(),
+                car.getMileage(),
+                car.getTransmissionType(),
+                car.getBarcode()
+        );
+    }
+
+    public Car toCar(CarDTO carDTO) {
+        Car car = new Car();
+        car.setBrand(carDTO.getBrand());
+        car.setModel(carDTO.getModel());
+        car.setType(CarType.valueOf(carDTO.getType())); // String olan type'ı CarType Enum'una çevir
+        car.setMileage(carDTO.getMileage());
+        car.setTransmissionType(carDTO.getTransmissionType());
+        car.setBarcode(carDTO.getBarcode());
+        return car;
+    }
+
+
+    public CarDTO saveCarDTO(CarDTO carDTO) {
+        Car car = toCar(carDTO); // Convert DTO to entity
+        Car savedCar = carRepository.save(car); // Save to the database
+        return toCarDTO(savedCar); // Convert saved entity back to DTO
+    }
+
+
+
+    public List<CarDTO> findCarsByStatus(CarStatus status) {
+        List<Car> cars = carRepository.findByStatus(status);
+        return cars.stream()
+                .map(this::toCarDTO) // DTO dönüşümü burada gerçekleşiyor
+                .collect(Collectors.toList());
+    }
+
+    public List<CarDTO> findCarsByBarcode(Long barcode) {
+        List<Car> cars = carRepository.findByBarcode(barcode);
+        return cars.stream()
+                .map(this::toCarDTO)
+                .collect(Collectors.toList());
     }
 
     public void deleteAll(){
