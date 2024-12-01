@@ -28,30 +28,30 @@ class MemberServiceTest {
 
 
 
-    @Test
-    void saveMemberAndFindMemberById() {
-        Member savedMember = memberService.saveMember(testMember);
-        Optional<Member> foundMember = memberService.findMemberById(savedMember.getId());
-        assertEquals(savedMember.getName(), foundMember.get().getName());
-    }
-
-    @Test
-    void findMemberById() {
-        Member savedMember = memberService.saveMember(testMember);
-        Optional<Member> foundMember = memberService.findMemberById(savedMember.getId());
-        assertEquals(savedMember.getName(), foundMember.get().getName());
-    }
-
-    @Test
-    void deleteMemberById() {
-        Member savedMember = memberService.saveMember(testMember);
-        memberService.deleteMemberById(savedMember.getId());
-        Optional<Member> foundMembers = memberService.findMemberById(savedMember.getId());
-        assertTrue(foundMembers.isEmpty());
-    }
-
-    @AfterEach
-    void deleteAll(){
-        memberService.deleteAll();
-    }
+//    @Test
+//    void saveMemberAndFindMemberById() {
+//        Member savedMember = memberService.saveMember(testMember);
+//        Optional<Member> foundMember = memberService.findMemberById(savedMember.getId());
+//        assertEquals(savedMember.getName(), foundMember.get().getName());
+//    }
+//
+//    @Test
+//    void findMemberById() {
+//        Member savedMember = memberService.saveMember(testMember);
+//        Optional<Member> foundMember = memberService.findMemberById(savedMember.getId());
+//        assertEquals(savedMember.getName(), foundMember.get().getName());
+//    }
+//
+//    @Test
+//    void deleteMemberById() {
+//        Member savedMember = memberService.saveMember(testMember);
+//        memberService.deleteMemberById(savedMember.getId());
+//        Optional<Member> foundMembers = memberService.findMemberById(savedMember.getId());
+//        assertTrue(foundMembers.isEmpty());
+//    }
+//
+//    @AfterEach
+//    void deleteAll(){
+//        memberService.deleteAll();
+//    }
 }

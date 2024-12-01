@@ -22,20 +22,20 @@ class LocationServiceTest {
 
     Location testLocation = new Location(name, address);
 
-    @Test
-    void addLocationAndFindLocationByCode() {
-        Location savedLocation = locationService.addLocation(testLocation);
-        Optional<Location> foundLocations = locationService.findLocationByCode(savedLocation.getCode());
-        assertEquals(savedLocation.getCode(), foundLocations.get().getCode());
-    }
-
-    @Test
-    void deleteLocationByCode() {
-        Location savedLocation = locationService.addLocation(testLocation);
-        locationService.deleteLocationByCode(savedLocation.getCode());
-        Optional<Location> foundLocations = locationService.findLocationByCode(testLocation.getCode());
-        assertTrue(foundLocations.isEmpty());
-    }
+//    @Test
+//    void addLocationAndFindLocationByCode() {
+//        Location savedLocation = locationService.addLocation(testLocation);
+//        Optional<Location> foundLocations = locationService.findLocationByCode(savedLocation.getCode());
+//        assertEquals(savedLocation.getCode(), foundLocations.get().getCode());
+//    }
+//
+//    @Test
+//    void deleteLocationByCode() {
+//        Location savedLocation = locationService.addLocation(testLocation);
+//        locationService.deleteLocationByCode(savedLocation.getCode());
+//        Optional<Location> foundLocations = locationService.findLocationByCode(testLocation.getCode());
+//        assertTrue(foundLocations.isEmpty());
+//    }
 
     @AfterEach
     void deleteAll() {

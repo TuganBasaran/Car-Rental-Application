@@ -3,6 +3,7 @@ package cs_393_TZS.car_rental_application.service;
 import cs_393_TZS.car_rental_application.DTO.CarDTO;
 import cs_393_TZS.car_rental_application.exception.CarNotFoundException;
 import cs_393_TZS.car_rental_application.model.CarType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cs_393_TZS.car_rental_application.model.Car;
 import cs_393_TZS.car_rental_application.model.CarStatus;
@@ -13,12 +14,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class CarService {
-    private final CarRepository carRepository; //final:construction injection
 
-    //constructor injection
-    public CarService(CarRepository carRepository) {
-        this.carRepository = carRepository;
-    }
+    @Autowired
+    private CarRepository carRepository;
 
 //    public List<Car> findAvailableCars() {
 //        return carRepository.findByStatus(CarStatus.AVAILABLE);
@@ -65,10 +63,12 @@ public class CarService {
         return new CarDTO(
                 car.getBrand(),
                 car.getModel(),
-                car.getType().toString(),
+                car.getType(),
                 car.getMileage(),
                 car.getTransmissionType(),
-                car.getBarcode()
+                car.getBarcode(),
+                car.getLicensePlate(),
+                car.getStatus()
         );
     }
 
@@ -76,10 +76,12 @@ public class CarService {
         Car car = new Car();
         car.setBrand(carDTO.getBrand());
         car.setModel(carDTO.getModel());
-        car.setType(CarType.valueOf(carDTO.getType())); // String olan type'ı CarType Enum'una çevir
+        car.setType(carDTO.getType());
         car.setMileage(carDTO.getMileage());
         car.setTransmissionType(carDTO.getTransmissionType());
         car.setBarcode(carDTO.getBarcode());
+        car.setLicensePlate(carDTO.getLicensePlate());
+        car.setStatus(carDTO.getStatus());
         return car;
     }
 

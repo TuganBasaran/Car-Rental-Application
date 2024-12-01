@@ -1,21 +1,28 @@
 package cs_393_TZS.car_rental_application.DTO;
 
+import cs_393_TZS.car_rental_application.model.CarStatus;
+import cs_393_TZS.car_rental_application.model.CarType;
+
 public class CarDTO {
     private String brand;
     private String model;
-    private String type; // Car type as a string
+    private CarType type; // Car type as a string
     private double mileage;
     private String transmissionType;
     private Long barcode;
+    private String licensePlate;
+    private CarStatus status;
 
     // Constructor
-    public CarDTO(String brand, String model, String type, double mileage, String transmissionType, Long barcode) {
+    public CarDTO(String brand, String model, CarType type, double mileage, String transmissionType, Long barcode, String licensePlate, CarStatus status) {
         this.brand = brand;
         this.model = model;
         this.type = type;
         this.mileage = mileage;
         this.transmissionType = transmissionType;
         this.barcode = barcode;
+        this.licensePlate = licensePlate;
+        this.status = status;
     }
 
     // Getters and Setters
@@ -35,11 +42,11 @@ public class CarDTO {
         this.model = model;
     }
 
-    public String getType() {
+    public CarType getType() {
         return type; // Ensure this getter exists
     }
 
-    public void setType(String type) {
+    public void setType(CarType type) {
         this.type = type;
     }
 
@@ -65,5 +72,21 @@ public class CarDTO {
 
     public void setBarcode(Long barcode) {
         this.barcode = barcode;
+    }
+
+    public String getLicensePlate() {
+        return licensePlate;
+    }
+
+    public void setLicensePlate(String licensePlate) {
+        this.licensePlate = licensePlate;
+    }
+
+    public CarStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(CarStatus status) {
+        this.status = status;
     }
 }
