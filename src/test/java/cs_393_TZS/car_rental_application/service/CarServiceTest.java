@@ -69,14 +69,8 @@ class CarServiceTest {
         CarDTO carDTO = carService.toCarDTO(car);
         CarDTO savedCar = carService.saveCarDTO(carDTO);
         List<CarDTO> foundCars = carService.findCarsByBarcode(savedCar.getBarcode());
-
-        // Liste boş değil
         assertFalse(foundCars.isEmpty(), "No cars found with the given barcode!");
-
-        // Liste sadece bir eleman içermeli
         assertEquals(1, foundCars.size(), "Expected exactly one car but found " + foundCars.size());
-
-        // İlk elemanın barcode'u doğrulanıyor
         assertEquals(savedCar.getBarcode(), foundCars.get(0).getBarcode());
     }
 
