@@ -205,4 +205,27 @@ public class Reservation {
         this.car = car;
     }
 
+    public double getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(double totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public List<Equipment> getEquipmentList() {
+        return equipmentList;
+    }
+
+    public void setEquipmentList(List<Equipment> equipmentList) {
+        this.equipmentList = equipmentList;
+    }
+
+    public List<Services> getServiceList() {
+        return serviceList;
+    }
+
+    public void setServiceList(List<Services> serviceList) {
+        this.serviceList = serviceList;
+    }
 }

@@ -15,40 +15,37 @@ import java.util.List;
 @RestController
 @RequestMapping("/cars")
 public class CarController {
+
     private final CarService carService;
 
-    // Constructor injection
     public CarController(CarService carService) {
         this.carService = carService;
     }
 
-    // Get all cars by status (using DTO)
-    @GetMapping("/{status}")
-    public ResponseEntity<?> getCarsByStatus(@PathVariable CarStatus status) {
-        List<CarDTO> cars = carService.findCarsByStatus(status);
-
-        if (cars.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("There are no cars with the status: " + status);
-        }
-        return ResponseEntity.ok(cars);
-    }
-
-    // Add a new car (using DTO)
     @PostMapping
     public ResponseEntity<CarDTO> addCar(@RequestBody CarDTO carDTO) {
         CarDTO newCar = carService.saveCarDTO(carDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(newCar);
     }
 
-    // Delete a car by barcode
+    @GetMapping("/{status}")
+    public ResponseEntity<List<CarDTO>> getCarsByStatus(@PathVariable CarStatus status) {
+        List<CarDTO> cars = carService.findCarsByStatus(status);
+        if (cars.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(cars);
+    }
+
     @DeleteMapping("/{barcode}")
     public ResponseEntity<?> deleteCar(@PathVariable Long barcode) {
         try {
             carService.deleteCar(barcode);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204 No Content
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (CarNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // 404 Not Found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
         }
     }
 }

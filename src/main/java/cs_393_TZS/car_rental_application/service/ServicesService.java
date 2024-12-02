@@ -20,11 +20,11 @@ public class ServicesService {
     @Autowired
     private ServicesRepository servicesRepository;
 
-    private ServicesDTO toDTO(Services services){
+    public ServicesDTO toDTO(Services services){
         return new ServicesDTO(services.getId(), services.getName(), services.getPrice());
     }
 
-    private Services toEntity(ServicesDTO servicesDTO){
+    public Services toEntity(ServicesDTO servicesDTO){
         Services services = new Services();
         services.setId(servicesDTO.getId());
         services.setName(servicesDTO.getName());

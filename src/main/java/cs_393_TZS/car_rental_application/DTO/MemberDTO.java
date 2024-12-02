@@ -1,5 +1,7 @@
 package cs_393_TZS.car_rental_application.DTO;
 
+import cs_393_TZS.car_rental_application.model.Member;
+
 public class MemberDTO {
     private Long id;
     private String name;
@@ -8,6 +10,7 @@ public class MemberDTO {
     private String address;
     private String email;
 
+    public MemberDTO(){}
 
 
     public MemberDTO(Long id, String name, String address, String email, String phone, String drivingLicenseNumber) {
@@ -66,5 +69,17 @@ public class MemberDTO {
 
     public void setDrivingLicenseNumber(String drivingLicenseNumber) {
         this.drivingLicenseNumber = drivingLicenseNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "MemberDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", drivingLicenseNumber='" + drivingLicenseNumber + '\'' +
+                ", address='" + address + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

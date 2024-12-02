@@ -16,7 +16,14 @@ public class LocationService {
     @Autowired
     LocationRepository locationRepository;
 
+    public LocationDTO toLocationDTO(Location location) {
+        return new LocationDTO(location.getCode(), location.getName(), location.getAddress());
+    }
 
+
+    public Location toEntity(LocationDTO locationDTO){
+        return new Location(locationDTO.getName(), locationDTO.getAddress());
+    }
 
     public LocationDTO findLocationByCode(Long code) {
         Location location = locationRepository.findById(code)
@@ -32,8 +39,8 @@ public class LocationService {
     }
 
 
-    public LocationDTO addLocation(Location location) {
-        Location savedLocation = locationRepository.save(location);
+    public LocationDTO addLocation(LocationDTO locationDTO) {
+        Location savedLocation = locationRepository.save(toEntity(locationDTO));
         return toLocationDTO(savedLocation);
     }
 
@@ -45,37 +52,9 @@ public class LocationService {
         locationRepository.deleteById(code);
     }
 
-
-
-    private LocationDTO toLocationDTO(Location location) {
-        return new LocationDTO(location.getCode(), location.getName(), location.getAddress());
-    }
-
     public void deleteAll() {
         locationRepository.deleteAll();
     }
-
 }
 
-
-
-    /*
-    Location addLocation(Location location){
-        return locationRepository.save(location);
-    }
-
-    Optional<Location> findLocationByCode(Long code){
-        return locationRepository.findById(code);
-    }
-
-    void deleteLocationByCode(Long code){
-        locationRepository.deleteById(code);
-    }
-
-    void deleteAll(){
-        locationRepository.deleteAll();
-    }
-}
-
-     */
 

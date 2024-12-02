@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,8 +36,8 @@ public class MemberController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getMemberById(@PathVariable Long id) {
         try {
-            Member member = memberService.findMemberById(id);
-            return ResponseEntity.ok(toMemberDTO(member));
+            MemberDTO member = memberService.findById(id);
+            return ResponseEntity.ok(member);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // 404 Not Found
         }
@@ -46,19 +47,22 @@ public class MemberController {
     // Add a new member
     @PostMapping
     public ResponseEntity<MemberDTO> addMember(@RequestBody Member member) {
-        Member savedMember = memberService.saveMember(member);
-        return ResponseEntity.status(HttpStatus.CREATED).body(toMemberDTO(savedMember));
+//        Member savedMember = memberService.saveMember(member);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(toMemberDTO(savedMember));
+
+        MemberDTO savedMember = memberService.saveMember(toMemberDTO(member));
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedMember);
     }
 
 
 
     @GetMapping
     public ResponseEntity<List<MemberDTO>> getAllMembers() {
-        List<Member> members = memberService.findAllMembers();
-        List<MemberDTO> memberDTOs = members.stream()
-                .map(this::toMemberDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(memberDTOs);
+        List<MemberDTO> members = memberService.findAll();
+//        List<MemberDTO> memberDTOs = members.stream()
+//                .map(this::toMemberDTO)
+//                .collect(Collectors.toList());
+        return ResponseEntity.ok(members);
     }
 
 

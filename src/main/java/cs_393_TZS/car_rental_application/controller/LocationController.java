@@ -43,7 +43,8 @@ public class LocationController {
     //add a new location
     @PostMapping
     public ResponseEntity<LocationDTO> addLocation(@RequestBody Location location) {
-        LocationDTO newLocation = locationService.addLocation(location);
+        LocationDTO locationDTO = locationService.toLocationDTO(location);
+        LocationDTO newLocation = locationService.addLocation(locationDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(newLocation); // 201 Created
     }
 

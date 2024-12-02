@@ -4,6 +4,7 @@ import cs_393_TZS.car_rental_application.DTO.ReservationDTO;
 import cs_393_TZS.car_rental_application.DTO.ReservationRequestDTO;
 import cs_393_TZS.car_rental_application.model.ReservationStatus;
 import cs_393_TZS.car_rental_application.service.ReservationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequestMapping("/reservations")
 public class ReservationController {
 
+    @Autowired
     private final ReservationService reservationService;
 
     public ReservationController(ReservationService reservationService) {
