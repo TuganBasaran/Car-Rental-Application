@@ -46,3 +46,5 @@ classes.
 14. It is forbidden to use FetchType.EAGER
 15. It is forbidden to use CascadeType.ALL and CascadeType.REMOVE. You can use the other cascade
 types depending on your requirements.
+
+UML Class Diagram Link:https://lucid.app/lucidchart/28f61c0b-c533-4fec-ae69-74905e969758/edit?viewport_loc=-1553%2C450%2C3797%2C1977%2CHWEp-vi-RSFO&invitationId=inv_c27c4465-a107-41b2-94c8-37c9c11dc933
