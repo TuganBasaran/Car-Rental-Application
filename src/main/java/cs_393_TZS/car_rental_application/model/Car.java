@@ -34,7 +34,7 @@ public class Car {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long barcode;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String licensePlate;
 
     private int passengerCapacity;
@@ -52,8 +52,8 @@ public class Car {
     @Column(nullable = false)
     private CarStatus status; // Enum for car statuses
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private Reservation reservation;
+    @OneToMany(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE},mappedBy = "car")
+    private List<Reservation> reservation;
 
 
     public Car() {
@@ -85,11 +85,11 @@ public class Car {
         this.barcode = barcode;
     }
 
-    public Reservation getReservation() {
+    public List<Reservation> getReservation() {
         return reservation;
     }
 
-    public void setReservation(Reservation reservation) {
+    public void setReservation(List<Reservation> reservation) {
         this.reservation = reservation;
     }
 

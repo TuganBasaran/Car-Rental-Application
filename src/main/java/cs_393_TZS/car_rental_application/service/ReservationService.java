@@ -7,11 +7,13 @@ import cs_393_TZS.car_rental_application.repository.ReservationRepository;
 import cs_393_TZS.car_rental_application.repository.CarRepository;
 import cs_393_TZS.car_rental_application.repository.MemberRepository;
 import cs_393_TZS.car_rental_application.repository.LocationRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -32,7 +34,15 @@ public class ReservationService {
     private LocationRepository locationRepository;
 
     // Convert Entity to DTO
+    @Transactional
     public ReservationDTO toReservationDTO(Reservation reservation) {
+        // Equipment ve Service adlarını almak
+        List<String> equipmentNames = reservation.getEquipmentList() != null
+                ? reservation.getEquipmentList().stream()
+                .map(Equipment::getName)
+                .collect(Collectors.toList())
+                : List.of();
+
         // totalCost hesaplama
         double totalCost = reservation.getCar().getDailyPrice() *
                 ChronoUnit.DAYS.between(reservation.getPickUpDate(), reservation.getDropOffDate());
@@ -48,13 +58,6 @@ public class ReservationService {
                     .mapToDouble(Equipment::getPrice)
                     .sum();
         }
-
-        // Equipment ve Service adlarını almak
-        List<String> equipmentNames = reservation.getEquipmentList() != null
-                ? reservation.getEquipmentList().stream()
-                .map(Equipment::getName)
-                .collect(Collectors.toList())
-                : List.of();
 
         List<String> serviceNames = reservation.getServiceList() != null
                 ? reservation.getServiceList().stream()
@@ -132,6 +135,7 @@ public class ReservationService {
     }
 
     // Create a new reservation
+    @Transactional
     public ReservationDTO createReservation(ReservationRequestDTO request) {
         Reservation reservation = toReservationEntity(request);
         Reservation savedReservation = reservationRepository.save(reservation);
@@ -139,6 +143,7 @@ public class ReservationService {
     }
 
     // Find reservations by status
+    @Transactional
     public List<ReservationDTO> findReservationsByStatus(ReservationStatus status) {
         List<Reservation> reservations = reservationRepository.findByStatus(status);
         return reservations.stream()
@@ -147,6 +152,7 @@ public class ReservationService {
     }
 
     //loaning a car
+    @Transactional
     public void markCarAsLoaned(String reservationNumber) {
         Reservation reservation = reservationRepository.findById(reservationNumber)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found with the number: " + reservationNumber));
@@ -158,5 +164,11 @@ public class ReservationService {
 
     public void deleteAllReservations() {
         reservationRepository.deleteAll();
+    }
+
+    @Transactional
+    public ReservationDTO findReservationById(String string){
+        Optional<Reservation> foundReservation = reservationRepository.findById(string);
+        return toReservationDTO(foundReservation.get());
     }
 }

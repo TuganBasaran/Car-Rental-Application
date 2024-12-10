@@ -45,7 +45,8 @@ public class Reservation {
     @JoinColumn(name = "dropOffLocationId",nullable = false)
     private Location dropOffLocation;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "car_id")
     private Car car;
 
     private LocalDateTime returnDate;
