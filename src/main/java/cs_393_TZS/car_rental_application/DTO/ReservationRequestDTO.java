@@ -12,13 +12,14 @@ public class ReservationRequestDTO {
     private List<Long> additionalServiceIds;
     private LocalDateTime pickUpDate;
     private LocalDateTime dropOffDate;
+    private Long dayCount;
 
     public ReservationRequestDTO() {
     }
 
     public ReservationRequestDTO(Long carBarcode, Long memberId, Long pickUpLocationCode, Long dropOffLocationCode, List<Long> additionalEquipmentIds,
                                  List<Long> additionalServiceIds, LocalDateTime pickUpDate,
-                                 LocalDateTime dropOffDate) {
+                                 Long dayCount) {
         this.carBarcode = carBarcode;
         this.memberId = memberId;
         this.pickUpLocationCode = pickUpLocationCode;
@@ -26,7 +27,8 @@ public class ReservationRequestDTO {
         this.additionalEquipmentIds = additionalEquipmentIds;
         this.additionalServiceIds = additionalServiceIds;
         this.pickUpDate = pickUpDate;
-        this.dropOffDate = dropOffDate;
+        this.dropOffDate = pickUpDate.plusDays(dayCount);
+        this.dayCount = dayCount;
     }
 
     public Long getCarBarcode() {
@@ -86,11 +88,5 @@ public class ReservationRequestDTO {
         this.pickUpDate = pickUpDate;
     }
 
-    public LocalDateTime getDropOffDate() {
-        return dropOffDate;
-    }
-
-    public void setDropOffDate(LocalDateTime dropOffDate) {
-        this.dropOffDate = dropOffDate;
-    }
+    public Long getDayCount(){return dayCount;}
 }

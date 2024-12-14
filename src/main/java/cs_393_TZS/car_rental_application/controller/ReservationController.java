@@ -1,5 +1,6 @@
 package cs_393_TZS.car_rental_application.controller;
 
+import cs_393_TZS.car_rental_application.DTO.MemberDTO;
 import cs_393_TZS.car_rental_application.DTO.ReservationDTO;
 import cs_393_TZS.car_rental_application.DTO.ReservationRequestDTO;
 import cs_393_TZS.car_rental_application.model.ReservationStatus;
@@ -48,6 +49,37 @@ public class ReservationController {
         }
         return ResponseEntity.ok(reservations); // 200 OK
     }
+    @PutMapping("/{reservationNumber}/services")
+    public ResponseEntity<Boolean> addServiceToReservation(
+            @PathVariable String reservationNumber,
+            @RequestParam Long serviceCode) {
+        try {
+            boolean isAdded = reservationService.addAdditionalService(reservationNumber, serviceCode);
+            if (isAdded) {
+                return ResponseEntity.ok(true);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+        }
+    }
+    @PutMapping("/{reservationNumber}/equipments")
+    public ResponseEntity<Boolean> addEquipmentToReservation(
+            @PathVariable String reservationNumber,
+            @RequestParam Long equipmentCode) {
+        try {
+            boolean isAdded = reservationService.addAdditionalEquipment(reservationNumber, equipmentCode);
+            if (isAdded) {
+                return ResponseEntity.ok(true);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+        }
+    }
+
 
     // Loaning a car
     @PatchMapping("/{reservationNumber}/loaned")
@@ -65,5 +97,15 @@ public class ReservationController {
     public ResponseEntity<?> deleteAllReservations() {
         reservationService.deleteAllReservations();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204 No Content
+    }
+    // Delete all reservations
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getReservationById(@PathVariable String id) {
+        try {
+            ReservationDTO reservation = reservationService.findReservationById(id);
+            return ResponseEntity.ok(reservation);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // 404 Not Found
+        }
     }
 }

@@ -3,10 +3,7 @@ package cs_393_TZS.car_rental_application.service;
 import cs_393_TZS.car_rental_application.DTO.ReservationDTO;
 import cs_393_TZS.car_rental_application.DTO.ReservationRequestDTO;
 import cs_393_TZS.car_rental_application.model.*;
-import cs_393_TZS.car_rental_application.repository.ReservationRepository;
-import cs_393_TZS.car_rental_application.repository.CarRepository;
-import cs_393_TZS.car_rental_application.repository.MemberRepository;
-import cs_393_TZS.car_rental_application.repository.LocationRepository;
+import cs_393_TZS.car_rental_application.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +29,10 @@ public class ReservationService {
 
     @Autowired
     private LocationRepository locationRepository;
+    @Autowired
+    private ServicesRepository servicesRepository;
+    @Autowired
+    private EquipmentRepository equipmentRepository;
 
     // Convert Entity to DTO
     @Transactional
@@ -92,6 +93,8 @@ public class ReservationService {
                 .orElseThrow(() -> new IllegalArgumentException("No pick up location with the code: " + request.getPickUpLocationCode()));
         Location dropOffLocation = locationRepository.findById(request.getDropOffLocationCode())
                 .orElseThrow(() -> new IllegalArgumentException("No drop off location with the code: " + request.getDropOffLocationCode()));
+        List<Services> servicesList = servicesRepository.findAllById(request.getAdditionalServiceIds());
+        List<Equipment> equipmentList = equipmentRepository.findAllById(request.getAdditionalEquipmentIds());
 
         // Check if car is available
         if (!car.getStatus().equals(CarStatus.AVAILABLE)) {
@@ -99,19 +102,23 @@ public class ReservationService {
         }
 
         // Check reservation dates
-        checkReservationDates(request.getPickUpDate(), request.getDropOffDate());
+        checkReservationDates(request.getPickUpDate(), request.getPickUpDate().plusDays(request.getDayCount()));
+        // Calculate drop-off date
+        LocalDateTime dropOffDate = request.getPickUpDate().plusDays(request.getDayCount());
 
         // Create a new reservation
         Reservation reservation = new Reservation();
         reservation.setReservationNumber(generateReservationNumber());
         reservation.setCreationDate(LocalDateTime.now());
         reservation.setPickUpDate(request.getPickUpDate());
-        reservation.setDropOffDate(request.getDropOffDate());
+        reservation.setDropOffDate(dropOffDate);
         reservation.setPickUpLocation(pickUpLocation);
         reservation.setDropOffLocation(dropOffLocation);
         reservation.setCar(car);
         reservation.setMember(member);
         reservation.setStatus(ReservationStatus.PENDING);
+        reservation.setServiceList(servicesList);
+        reservation.setEquipmentList(equipmentList);
 
 
         car.setStatus(CarStatus.RESERVED);
@@ -160,11 +167,71 @@ public class ReservationService {
         reservation.getCar().setStatus(CarStatus.LOANED);
         reservationRepository.save(reservation);
     }
+    public boolean addAdditionalService(String reservationNumber, Long serviceCode) {
+        // Fetch the reservation by reservationNumber
+        Optional<Reservation> reservationOptional = reservationRepository.findById(reservationNumber);
+
+        if (reservationOptional.isEmpty()) {
+            return false; // Reservation not found
+        }
+
+        Reservation reservation = reservationOptional.get();
+
+        // Fetch the service by serviceCode
+        Optional<Services> serviceOptional = servicesRepository.findById(serviceCode);
+
+        if (serviceOptional.isEmpty()) {
+            return false; // Service not found
+        }
+
+        Services service = serviceOptional.get();
+
+        // Check if the service is already added to the reservation
+        if (reservation.getServiceList().contains(service)) {
+            return false; // Service already added
+        }
+
+        // Add the service to the reservation
+        reservation.getServiceList().add(service);
+        reservationRepository.save(reservation);
+
+        return true; // Service added successfully
+    }
+    public boolean addAdditionalEquipment(String reservationNumber, Long equipmentCode) {
+
+        Optional<Reservation> reservationOptional = reservationRepository.findById(reservationNumber);
+
+        if (reservationOptional.isEmpty()) {
+            return false;
+        }
+
+        Reservation reservation = reservationOptional.get();
+
+        Optional<Equipment> equipmentOptional = equipmentRepository.findById(equipmentCode);
+
+        if (equipmentOptional.isEmpty()) {
+            return false;
+        }
+
+        Equipment equipment = equipmentOptional.get();
+
+
+        if (reservation.getEquipmentList().contains(equipment)) {
+            return false;
+        }
+
+
+        reservation.getEquipmentList().add(equipment);
+        reservationRepository.save(reservation);
+
+        return true;
+    }
 
 
     public void deleteAllReservations() {
         reservationRepository.deleteAll();
     }
+
 
     @Transactional
     public ReservationDTO findReservationById(String string){
