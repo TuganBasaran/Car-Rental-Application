@@ -82,19 +82,6 @@ public class ReservationController {
         }
     }
 
-    @PutMapping("/{reservationNumber}/return")
-    public ResponseEntity<Boolean> returnCar(@PathVariable String reservationNumber) {
-        try {
-            boolean result = reservationService.returnCar(reservationNumber);
-            if (result) {
-                return ResponseEntity.ok(true);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
-        }
-    }
 
 
     // Loaning a car

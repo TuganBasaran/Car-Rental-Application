@@ -227,29 +227,6 @@ public class ReservationService {
         return true;
     }
 
-    @Transactional
-    public boolean returnCar(String reservationNumber) {
-        Optional<Reservation> reservationOptional = reservationRepository.findById(reservationNumber);
-
-        if (reservationOptional.isEmpty()) {
-            return false; // Reservation not found
-        }
-
-        Reservation reservation = reservationOptional.get();
-        Car car = reservation.getCar();
-
-        // Update reservation status and return date
-        reservation.setStatus(ReservationStatus.COMPLETED);
-
-        // Update car status
-        car.setStatus(CarStatus.AVAILABLE);
-
-        // Save changes
-        reservationRepository.save(reservation);
-        carRepository.save(car);
-
-        return true;
-    }
 
 
     public void deleteAllReservations() {
