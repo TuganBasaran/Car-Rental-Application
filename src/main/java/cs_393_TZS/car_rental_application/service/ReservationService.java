@@ -242,40 +242,57 @@ public class ReservationService {
 
     //return car
     @Transactional
-    public void markCarAsReturned(String reservationNumber, LocalDateTime localDateTime) {
-        Reservation reservation = reservationRepository.findById(reservationNumber)
-                .orElseThrow(() -> new IllegalArgumentException("Reservation not found with the number: " + reservationNumber));
+    public boolean markCarAsReturned(String reservationNumber, LocalDateTime localDateTime) {
 
-        if (reservation.getStatus() == ReservationStatus.COMPLETED || reservation.getStatus() == ReservationStatus.CANCELLED) {
-            throw new IllegalArgumentException("Reservation is already completed or cancelled.");
+        Reservation reservation = reservationRepository.findById(reservationNumber)
+                .orElse(null);
+
+        if (reservation == null || reservation.getStatus() == ReservationStatus.COMPLETED ||
+                reservation.getStatus() == ReservationStatus.CANCELLED) {
+            return false;
         }
 
-        reservation.setReturnDate(localDateTime);
+        reservation.setReturnDate(localDateTime != null ? localDateTime : LocalDateTime.now());
+
         reservation.setStatus(ReservationStatus.COMPLETED);
         reservation.getCar().setStatus(CarStatus.AVAILABLE);
         reservationRepository.save(reservation);
+        return true;
     }
+
 
     //cancel reservation
     @Transactional
-    public void markCarAsCancelled(String reservationNumber) {
-        Reservation reservation = reservationRepository.findById(reservationNumber)
-                .orElseThrow(() -> new IllegalArgumentException("No reservation with the number: " + reservationNumber));
-        if(reservation.getStatus() == ReservationStatus.COMPLETED || reservation.getStatus() == ReservationStatus.CANCELLED){
-            throw new IllegalArgumentException("Reservation is already completed or cancelled. You cannot cancel it again!");
+    public boolean markCarAsCancelled(String reservationNumber) {
+        Reservation reservation = reservationRepository.findById(reservationNumber).orElse(null);
+
+        if (reservation == null || reservation.getStatus() == ReservationStatus.CANCELLED ||
+                reservation.getStatus() == ReservationStatus.COMPLETED) {
+            return false;
         }
+
         reservation.setStatus(ReservationStatus.CANCELLED);
         reservation.getCar().setStatus(CarStatus.AVAILABLE);
         reservationRepository.save(reservation);
+        return true;
     }
+
 
     //delete reservation
     @Transactional
-    public void deleteReservation(String reservationNumber) {
-        Reservation reservation = reservationRepository.findById(reservationNumber)
-                .orElseThrow(() -> new IllegalArgumentException("No reservation with the number: " + reservationNumber));
+    public boolean deleteReservation(String reservationNumber) {
+        Reservation reservation = reservationRepository.findById(reservationNumber).orElse(null);
+
+        if (reservation == null) {
+            return false;
+        }
+
+        reservation.setCar(null);
+        reservation.setMember(null);
         reservationRepository.delete(reservation);
+        return true;
     }
+
 
 
 

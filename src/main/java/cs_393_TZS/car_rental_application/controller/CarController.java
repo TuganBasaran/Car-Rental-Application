@@ -1,13 +1,10 @@
 package cs_393_TZS.car_rental_application.controller;
 
 import cs_393_TZS.car_rental_application.DTO.CarDTO;
-import cs_393_TZS.car_rental_application.exception.CarNotFoundException;
 import cs_393_TZS.car_rental_application.model.CarStatus;
-
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-import cs_393_TZS.car_rental_application.model.Car;
+import org.springframework.web.bind.annotation.*;
 import cs_393_TZS.car_rental_application.service.CarService;
 
 import java.util.List;
@@ -22,21 +19,48 @@ public class CarController {
         this.carService = carService;
     }
 
+    // Add a new car
     @PostMapping
     public ResponseEntity<CarDTO> addCar(@RequestBody CarDTO carDTO) {
         CarDTO newCar = carService.saveCarDTO(carDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(newCar);
     }
 
+    // Get cars by status
     @GetMapping("/{status}")
-    public ResponseEntity<List<CarDTO>> getCarsByStatus(@PathVariable CarStatus status) {
+    public ResponseEntity<?> getCarsByStatus(@PathVariable CarStatus status) {
         List<CarDTO> cars = carService.findCarsByStatus(status);
         if (cars.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No cars found with the specified status: " + status); // 404 Not Found with message
         }
-        return ResponseEntity.ok(cars);
+        return ResponseEntity.ok(cars); // 200 OK
     }
 
+    // Delete a car
+    @DeleteMapping("/{barcode}")
+    public ResponseEntity<?> deleteCar(@PathVariable Long barcode) {
+        try {
+            boolean isDeleted = carService.deleteCar(barcode);
+
+            if (isDeleted) {
+                return ResponseEntity.ok("Car deleted successfully."); // 200 OK
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                        .body("Car is not available or is associated with a reservation and cannot be deleted."); // 406 Not Acceptable
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Car not found with the barcode: " + barcode); // 404 Not Found
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Unexpected error occurred: " + e.getMessage()); // 500 Internal Server Error
+        }
+    }
+}
+
+
+/*
     @DeleteMapping("/{barcode}")
     public ResponseEntity<?> deleteCar(@PathVariable Long barcode) {
         try {
@@ -50,7 +74,7 @@ public class CarController {
     }
 
 
-}
+ */
 
 //COMMENTLEDİM SİLMEDİM BAKARSIN
 /*
