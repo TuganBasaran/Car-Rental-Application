@@ -102,7 +102,7 @@ public class CarService {
     @Transactional
     public boolean deleteCar(Long barcode) {
         Car car = carRepository.findByBarcode(barcode)
-                .orElseThrow(() -> new IllegalArgumentException("No car with the barcode: " + barcode));
+                .orElseThrow(() -> new IllegalArgumentException("Car not found with the barcode: " + barcode));
 
         if (car.getStatus() != CarStatus.AVAILABLE || reservationRepository.existsByCar(car)) {
             return false;

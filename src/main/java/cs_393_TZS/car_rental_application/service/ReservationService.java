@@ -282,17 +282,23 @@ public class ReservationService {
     //delete reservation
     @Transactional
     public boolean deleteReservation(String reservationNumber) {
-        Reservation reservation = reservationRepository.findById(reservationNumber).orElse(null);
+        try {
+            Reservation reservation = reservationRepository.findById(reservationNumber)
+                    .orElseThrow(() -> new IllegalArgumentException("Reservation not found with number: " + reservationNumber));
 
-        if (reservation == null) {
-            return false;
+            reservation.setCar(null);
+            reservation.setMember(null);
+
+            reservationRepository.delete(reservation);
+
+            return true;
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Error while deleting reservation: " + e.getMessage(), e);
         }
-
-        reservation.setCar(null);
-        reservation.setMember(null);
-        reservationRepository.delete(reservation);
-        return true;
     }
+
 
 
 

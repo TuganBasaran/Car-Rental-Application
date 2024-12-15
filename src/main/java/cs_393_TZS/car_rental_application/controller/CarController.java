@@ -51,13 +51,15 @@ public class CarController {
             }
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Car not found with the barcode: " + barcode); // 404 Not Found
+                    .body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Unexpected error occurred: " + e.getMessage()); // 500 Internal Server Error
+                    .body("Unexpected error occurred: " + e.getMessage()); //500 Internal Server Error
         }
     }
+
 }
+
 
 
 /*

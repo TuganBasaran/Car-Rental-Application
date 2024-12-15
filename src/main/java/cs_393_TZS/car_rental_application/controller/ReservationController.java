@@ -162,18 +162,21 @@ public class ReservationController {
     public ResponseEntity<?> deleteReservation(@PathVariable String reservationNumber) {
         try {
             boolean isDeleted = reservationService.deleteReservation(reservationNumber);
+
             if (isDeleted) {
                 return ResponseEntity.ok("Reservation deleted successfully."); // 200 OK
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reservation not found."); // 404 Not Found
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Reservation not found with number: " + reservationNumber);
             }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage()); // 404 Not Found
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Unexpected error occurred: " + e.getMessage()); // 500 Internal Server Error
         }
     }
-
-
 
 
 }
