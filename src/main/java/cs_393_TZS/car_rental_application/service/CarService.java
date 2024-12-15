@@ -1,6 +1,7 @@
 package cs_393_TZS.car_rental_application.service;
 
 import cs_393_TZS.car_rental_application.DTO.CarDTO;
+import cs_393_TZS.car_rental_application.model.CarType;
 import cs_393_TZS.car_rental_application.repository.ReservationRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +92,11 @@ public class CarService {
         return cars.stream()
                 .map(this::toCarDTO)
                 .collect(Collectors.toList());
+    }
+
+    public List<CarDTO> findCarsByTypeAndTransmissionTypes(CarType type, String transmissionType){
+        List<Car> cars = carRepository.findCarByTypeAndTransmissionType(type, transmissionType);
+        return cars.stream().map(this::toCarDTO).collect(Collectors.toList());
     }
 
 

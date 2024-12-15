@@ -1,7 +1,9 @@
 package cs_393_TZS.car_rental_application.controller;
 
 import cs_393_TZS.car_rental_application.DTO.CarDTO;
+import cs_393_TZS.car_rental_application.model.Car;
 import cs_393_TZS.car_rental_application.model.CarStatus;
+import cs_393_TZS.car_rental_application.model.CarType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +39,41 @@ public class CarController {
         return ResponseEntity.ok(cars); // 200 OK
     }
 
+    @GetMapping("/available")
+    public ResponseEntity<?> getAvailableCarsByTypeAndTransmissionType(
+            @RequestParam CarType carType, @RequestParam String transmissionType) {
+        try {
+            List<CarDTO> carDTOList = carService.findCarsByTypeAndTransmissionTypes(carType, transmissionType);
+            if (carDTOList.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No car found");
+            }
+            return ResponseEntity.ok(carDTOList);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid car type or transmission type");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
+        }
+    }
+
+    @GetMapping("/rented")
+    public ResponseEntity<?> getAllRentedCars(){
+        try {
+            List<CarDTO> loanedCarList = carService.findCarsByStatus(CarStatus.LOANED);
+            List<CarDTO> reservedCarList = carService.findCarsByStatus(CarStatus.RESERVED);
+            loanedCarList.addAll(reservedCarList);
+            if(loanedCarList.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There is no reserved or loaned cars at the moment");
+            } else {
+                return ResponseEntity.ok(loanedCarList);
+            }
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected Error");
+        }
+
+    }
+
     // Delete a car
     @DeleteMapping("/{barcode}")
     public ResponseEntity<?> deleteCar(@PathVariable Long barcode) {
@@ -57,6 +94,8 @@ public class CarController {
                     .body("Unexpected error occurred: " + e.getMessage()); //500 Internal Server Error
         }
     }
+
+
 
 }
 

@@ -6,7 +6,10 @@ import cs_393_TZS.car_rental_application.model.*;
 import cs_393_TZS.car_rental_application.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -101,8 +104,6 @@ public class ReservationService {
             throw new IllegalArgumentException("Car is not available for reservation.");
         }
 
-        // Check reservation dates
-        checkReservationDates(request.getPickUpDate(), request.getPickUpDate().plusDays(request.getDayCount()));
         // Calculate drop-off date
         LocalDateTime dropOffDate = request.getPickUpDate().plusDays(request.getDayCount());
 
@@ -110,8 +111,8 @@ public class ReservationService {
         Reservation reservation = new Reservation();
         reservation.setReservationNumber(generateReservationNumber());
         reservation.setCreationDate(LocalDateTime.now());
-        reservation.setPickUpDate(request.getPickUpDate());
-        reservation.setDropOffDate(dropOffDate);
+        reservation.setPickUpDate(reservation.getCreationDate().plusDays(1));
+        reservation.setDropOffDate(reservation.getPickUpDate().plusDays(request.getDayCount()));
         reservation.setPickUpLocation(pickUpLocation);
         reservation.setDropOffLocation(dropOffLocation);
         reservation.setCar(car);
@@ -121,7 +122,7 @@ public class ReservationService {
         reservation.setEquipmentList(equipmentList);
 
 
-        car.setStatus(CarStatus.RESERVED);
+        car.setStatus(CarStatus.LOANED);
 
         return reservation;
     }
@@ -131,15 +132,6 @@ public class ReservationService {
         return UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
-    // Check reservation dates
-    private void checkReservationDates(LocalDateTime pickUpDate, LocalDateTime dropOffDate) {
-        if (pickUpDate.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Pick up date cannot be in the past.");
-        }
-        if (pickUpDate.isAfter(dropOffDate)) { //drop off:returning
-            throw new IllegalArgumentException("Pick up date cannot be after drop-off date.");
-        }
-    }
 
     // Create a new reservation
     @Transactional
@@ -235,15 +227,15 @@ public class ReservationService {
 
 
     @Transactional
-    public ReservationDTO findReservationById(String string){
-        Optional<Reservation> foundReservation = reservationRepository.findById(string);
+    public ReservationDTO findReservationById(String reservationId){
+        Optional<Reservation> foundReservation = reservationRepository.findById(reservationId);
         return toReservationDTO(foundReservation.get());
     }
 
 
     //return car
     @Transactional
-    public boolean markCarAsReturned(String reservationNumber, LocalDateTime localDateTime) {
+    public boolean markCarAsReturned(String reservationNumber) {
 
         Reservation reservation = reservationRepository.findById(reservationNumber)
                 .orElse(null);
@@ -253,7 +245,7 @@ public class ReservationService {
             return false;
         }
 
-        reservation.setReturnDate(localDateTime != null ? localDateTime : LocalDateTime.now());
+        reservation.setReturnDate(LocalDateTime.now());
 
         reservation.setStatus(ReservationStatus.COMPLETED);
         reservation.getCar().setStatus(CarStatus.AVAILABLE);
@@ -299,7 +291,26 @@ public class ReservationService {
         }
     }
 
+    @Transactional
+    public boolean returnCar(String reservationNumber){
+        try {
+            Reservation reservation = reservationRepository.findById(reservationNumber)
+                    .orElseThrow(() -> new IllegalArgumentException("Reservation not found with number: " + reservationNumber));
 
+            //Updating car status
+            Car car = reservation.getCar();
+            car.setStatus(CarStatus.AVAILABLE);
+
+            //Updating Reservation Status and Return Date
+            reservation.setStatus(ReservationStatus.COMPLETED);
+            reservation.setReturnDate(LocalDateTime.now());
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        } catch (Exception e){
+            return false;
+        }
+    }
 
 
 

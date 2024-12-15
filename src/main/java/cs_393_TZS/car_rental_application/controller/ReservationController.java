@@ -32,13 +32,9 @@ public class ReservationController {
             ReservationDTO createdReservation = reservationService.createReservation(reservationRequestDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdReservation); // 201 Created
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE) // 406 Not Acceptable
-                    .body(e.getMessage());
-        } /*catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT) // 206 Partial Content
+            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT) //206 Partial Content
                     .body(e.getMessage());
         }
-        */
     }
 
     // Get reservations by status
@@ -115,15 +111,11 @@ public class ReservationController {
 
     //return car
     @PutMapping("/{reservationNumber}/returned")
-    public ResponseEntity<?> markCarAsReturned(@PathVariable String reservationNumber,
-                                               @RequestParam(required = false) String returnDate) {
+    public ResponseEntity<?> markCarAsReturned(@PathVariable String reservationNumber) {
         try {
-            boolean isReturned = reservationService.markCarAsReturned(
-                    reservationNumber,
-                    returnDate != null ? LocalDateTime.parse(returnDate) : null
-            );
+            boolean isReturned = reservationService.markCarAsReturned(reservationNumber);
             if (isReturned) {
-                return ResponseEntity.ok("Reservation marked as RETURNED, and car status updated to AVAILABLE."); // 200 OK
+                return ResponseEntity.ok("Reservation marked as COMPLETED, and car status updated to AVAILABLE."); // 200 OK
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reservation not found or already completed/cancelled."); // 404 Not Found
             }
@@ -177,8 +169,6 @@ public class ReservationController {
                     .body("Unexpected error occurred: " + e.getMessage()); // 500 Internal Server Error
         }
     }
-
-
 }
 
 
