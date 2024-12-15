@@ -255,4 +255,18 @@ public class ReservationService {
         reservation.getCar().setStatus(CarStatus.AVAILABLE);
         reservationRepository.save(reservation);
     }
+
+    //cancel reservation
+    @Transactional
+    public void markCarAsCancelled(String reservationNumber) {
+        Reservation reservation = reservationRepository.findById(reservationNumber)
+                .orElseThrow(() -> new IllegalArgumentException("No reservation with the number: " + reservationNumber));
+        if(reservation.getStatus() == ReservationStatus.COMPLETED || reservation.getStatus() == ReservationStatus.CANCELLED){
+            throw new IllegalArgumentException("Reservation is already completed or cancelled. You cannot cancel it again!");
+        }
+        reservation.setStatus(ReservationStatus.CANCELLED);
+        reservation.getCar().setStatus(CarStatus.AVAILABLE);
+        reservationRepository.save(reservation);
+    }
+
 }

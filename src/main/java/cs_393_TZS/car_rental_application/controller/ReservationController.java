@@ -125,6 +125,19 @@ public class ReservationController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage()); // 500 Internal Server Error
             }
         }
+
+
+        //cancel reservation
+        @PutMapping("/{reservationNumber}/cancelled")
+        public ResponseEntity<?> markCarAsCancelled(@PathVariable String reservationNumber) {
+            try {
+                reservationService.markCarAsCancelled(reservationNumber);
+                return ResponseEntity.ok("Reservation marked as CANCELLED, and car status updated to AVAILABLE."); // 200 OK
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 400 Bad Request
+            }
+        }
+
     }
 
 
