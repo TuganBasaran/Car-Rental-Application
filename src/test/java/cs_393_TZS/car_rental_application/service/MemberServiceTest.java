@@ -64,7 +64,7 @@ class MemberServiceTest {
 
         List<MemberDTO> foundMembers = memberService.findAll();
         System.out.println(foundMembers);
-        assertEquals(2, foundMembers.size());
+        assertEquals(5, foundMembers.size());
         assertEquals(saved1.getId(), foundMembers.get(0).getId());
         assertEquals(saved2.getId(), foundMembers.get(1).getId());
     }

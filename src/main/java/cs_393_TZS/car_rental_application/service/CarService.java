@@ -110,7 +110,7 @@ public class CarService {
         Car car = carRepository.findByBarcode(barcode)
                 .orElseThrow(() -> new IllegalArgumentException("Car not found with the barcode: " + barcode));
 
-        if (car.getStatus() != CarStatus.AVAILABLE || reservationRepository.existsByCar(car)) {
+        if (car.getStatus() != CarStatus.AVAILABLE) {
             return false;
         }
 
