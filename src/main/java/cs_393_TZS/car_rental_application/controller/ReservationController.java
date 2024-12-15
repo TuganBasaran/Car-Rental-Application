@@ -27,10 +27,13 @@ public class ReservationController {
 
 
     @PostMapping
-    public ResponseEntity<?> createReservation(@RequestBody ReservationRequestDTO reservationRequestDTO) {
+    public ResponseEntity<?> createReservation(@RequestParam Long carBarcode, @RequestParam int dayCount, @RequestParam Long memberId, @RequestParam Long pickUpLocationCode,
+                                               @RequestParam Long dropOffLocationCode, @RequestParam(required = false) List<Long> additionalEquipmentList,@RequestParam(required = false) List<Long> addtionalServiceList) {
         try {
+            ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO(carBarcode, memberId, pickUpLocationCode, dropOffLocationCode,
+                    additionalEquipmentList, addtionalServiceList, dayCount);
             ReservationDTO createdReservation = reservationService.createReservation(reservationRequestDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdReservation); // 201 Created
+            return ResponseEntity.status(HttpStatus.OK).body(createdReservation); // 201 Created
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT) //206 Partial Content
                     .body(e.getMessage());
@@ -81,7 +84,7 @@ public class ReservationController {
 
 
     // Loaning a car
-    @PatchMapping("/{reservationNumber}/loaned")
+    @PutMapping("/{reservationNumber}/loaned")
     public ResponseEntity<?> markCarAsLoaned(@PathVariable String reservationNumber) {
         try {
             reservationService.markCarAsLoaned(reservationNumber);

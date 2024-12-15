@@ -104,9 +104,6 @@ public class ReservationService {
             throw new IllegalArgumentException("Car is not available for reservation.");
         }
 
-        // Calculate drop-off date
-        LocalDateTime dropOffDate = request.getPickUpDate().plusDays(request.getDayCount());
-
         // Create a new reservation
         Reservation reservation = new Reservation();
         reservation.setReservationNumber(generateReservationNumber());
@@ -278,9 +275,7 @@ public class ReservationService {
             Reservation reservation = reservationRepository.findById(reservationNumber)
                     .orElseThrow(() -> new IllegalArgumentException("Reservation not found with number: " + reservationNumber));
 
-            reservation.setCar(null);
-            reservation.setMember(null);
-
+            reservation.getCar().setStatus(CarStatus.AVAILABLE);
             reservationRepository.delete(reservation);
 
             return true;
