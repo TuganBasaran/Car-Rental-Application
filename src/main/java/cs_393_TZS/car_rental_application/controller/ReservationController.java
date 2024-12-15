@@ -118,9 +118,9 @@ public class ReservationController {
             reservationService.markCarAsReturned(reservationNumber, returnDate != null ? LocalDateTime.parse(returnDate) : null);
             return ResponseEntity.ok("Reservation marked as RETURNED, and car status updated to AVAILABLE."); // 200 OK
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 400 Bad Request
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // 404 Not Found
         } catch (DateTimeParseException e) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid date format. Please use the format: yyyy-MM-ddTHH:mm:ss"); // 400 Bad Request
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid date format. Please use the format: yyyy-MM-ddTHH:mm:ss"); // 500 Internal Server Error
             } catch(Exception e){
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage()); // 500 Internal Server Error
             }
@@ -134,11 +134,29 @@ public class ReservationController {
                 reservationService.markCarAsCancelled(reservationNumber);
                 return ResponseEntity.ok("Reservation marked as CANCELLED, and car status updated to AVAILABLE."); // 200 OK
             } catch (IllegalArgumentException e) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 400 Bad Request
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // 404 Not Found
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error occurred: " + e.getMessage()); // 500 Internal Server Error
             }
         }
 
-    }
+        //delete reservation
+        @DeleteMapping("/{reservationNumber}")
+        public ResponseEntity<?> deleteReservation(@PathVariable String reservationNumber) {
+            try {
+                reservationService.deleteReservation(reservationNumber);
+                return ResponseEntity.ok("Reservation deleted successfully."); // 200 OK
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // 404 Not Found
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Unexpected error occurred: " + e.getMessage()); // 500 Internal Server Error
+            }
+        }
+
+
+
+}
 
 
 

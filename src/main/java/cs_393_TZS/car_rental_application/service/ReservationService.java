@@ -269,4 +269,14 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
+    //delete reservation
+    @Transactional
+    public void deleteReservation(String reservationNumber) {
+        Reservation reservation = reservationRepository.findById(reservationNumber)
+                .orElseThrow(() -> new IllegalArgumentException("No reservation with the number: " + reservationNumber));
+        reservationRepository.delete(reservation);
+    }
+
+
+
 }
