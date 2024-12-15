@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @RestController
@@ -108,4 +110,22 @@ public class ReservationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // 404 Not Found
         }
     }
-}
+
+    //return car
+    @PutMapping("/{reservationNumber}/returned")
+    public ResponseEntity<?> markCarAsReturned(@PathVariable String reservationNumber, @RequestParam(required = false) String returnDate) {
+        try {
+            reservationService.markCarAsReturned(reservationNumber, returnDate != null ? LocalDateTime.parse(returnDate) : null);
+            return ResponseEntity.ok("Reservation marked as RETURNED, and car status updated to AVAILABLE."); // 200 OK
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // 400 Bad Request
+        } catch (DateTimeParseException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid date format. Please use the format: yyyy-MM-ddTHH:mm:ss"); // 400 Bad Request
+            } catch(Exception e){
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage()); // 500 Internal Server Error
+            }
+        }
+    }
+
+
+

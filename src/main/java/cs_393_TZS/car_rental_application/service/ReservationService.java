@@ -238,4 +238,21 @@ public class ReservationService {
         Optional<Reservation> foundReservation = reservationRepository.findById(string);
         return toReservationDTO(foundReservation.get());
     }
+
+
+    //return car
+    @Transactional
+    public void markCarAsReturned(String reservationNumber, LocalDateTime localDateTime) {
+        Reservation reservation = reservationRepository.findById(reservationNumber)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found with the number: " + reservationNumber));
+
+        if (reservation.getStatus() == ReservationStatus.COMPLETED || reservation.getStatus() == ReservationStatus.CANCELLED) {
+            throw new IllegalArgumentException("Reservation is already completed or cancelled.");
+        }
+
+        reservation.setReturnDate(localDateTime);
+        reservation.setStatus(ReservationStatus.COMPLETED);
+        reservation.getCar().setStatus(CarStatus.AVAILABLE);
+        reservationRepository.save(reservation);
+    }
 }

@@ -48,6 +48,8 @@ public class CarController {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
         }
     }
+
+
 }
 
 //COMMENTLEDİM SİLMEDİM BAKARSIN
