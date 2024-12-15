@@ -75,9 +75,7 @@ public class ReservationServiceTest {
         ReservationRequestDTO request = new ReservationRequestDTO(
                 savedCar.getBarcode(), savedMember.getId()
                 , savedPickupLocation.getCode(), dropOffLocation.getCode(),
-                null,null,
-                LocalDateTime.now().plusDays(1),
-                LocalDateTime.now().plusDays(3)
+                null,null,2
         );
 
 
@@ -127,9 +125,7 @@ public class ReservationServiceTest {
         ReservationRequestDTO request = new ReservationRequestDTO(
                 savedCar.getBarcode(), savedMember.getId()
                 , savedPickupLocation.getCode(), dropOffLocation.getCode(),
-                null,null,
-                LocalDateTime.now().plusDays(1),
-                LocalDateTime.now().plusDays(3)
+                null,null,2
         );
 
         ReservationDTO savedReservationDTO = reservationService.createReservation(request);
@@ -176,8 +172,7 @@ public class ReservationServiceTest {
                 savedCar.getBarcode(), savedMember.getId()
                 , savedPickupLocation.getCode(), dropOffLocation.getCode(),
                 null,null,
-                LocalDateTime.now().plusDays(1),
-                LocalDateTime.now().plusDays(3)
+               2
         );
 
         ReservationDTO savedReservationDTO = reservationService.createReservation(request);
@@ -229,8 +224,7 @@ public class ReservationServiceTest {
                 savedCar.getBarcode(), savedMember.getId()
                 , savedPickupLocation.getCode(), dropOffLocation.getCode(),
                 null,null,
-                LocalDateTime.now().plusDays(1),
-                LocalDateTime.now().plusDays(3)
+                2
         );
 
         ReservationDTO savedReservationDTO = reservationService.createReservation(request);

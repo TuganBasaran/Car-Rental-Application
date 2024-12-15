@@ -33,7 +33,7 @@ public class ReservationController {
             ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO(carBarcode, memberId, pickUpLocationCode, dropOffLocationCode,
                     additionalEquipmentList, addtionalServiceList, dayCount);
             ReservationDTO createdReservation = reservationService.createReservation(reservationRequestDTO);
-            return ResponseEntity.status(HttpStatus.OK).body(createdReservation); // 201 Created
+            return ResponseEntity.status(HttpStatus.OK).body(createdReservation);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT) //206 Partial Content
                     .body(e.getMessage());

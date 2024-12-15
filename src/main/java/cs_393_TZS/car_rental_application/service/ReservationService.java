@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -88,6 +89,8 @@ public class ReservationService {
     }
     // DTO to Entity
     public Reservation toReservationEntity(ReservationRequestDTO request) {
+        List<Services> servicesList = new ArrayList<>();
+        List<Equipment> equipmentList = new ArrayList<>();
         Car car = carRepository.findById(request.getCarBarcode())
                 .orElseThrow(() -> new IllegalArgumentException("No car with the barcode: " + request.getCarBarcode()));
         Member member = memberRepository.findById(request.getMemberId())
@@ -96,8 +99,14 @@ public class ReservationService {
                 .orElseThrow(() -> new IllegalArgumentException("No pick up location with the code: " + request.getPickUpLocationCode()));
         Location dropOffLocation = locationRepository.findById(request.getDropOffLocationCode())
                 .orElseThrow(() -> new IllegalArgumentException("No drop off location with the code: " + request.getDropOffLocationCode()));
-        List<Services> servicesList = servicesRepository.findAllById(request.getAdditionalServiceIds());
-        List<Equipment> equipmentList = equipmentRepository.findAllById(request.getAdditionalEquipmentIds());
+        if(request.getAdditionalServiceIds() != null)
+        {
+            servicesList = servicesRepository.findAllById(request.getAdditionalServiceIds());
+        }
+        if (request.getAdditionalEquipmentIds() != null){
+            equipmentList = equipmentRepository.findAllById(request.getAdditionalEquipmentIds());
+        }
+
 
         // Check if car is available
         if (!car.getStatus().equals(CarStatus.AVAILABLE)) {
@@ -115,7 +124,7 @@ public class ReservationService {
         reservation.setCar(car);
         reservation.setMember(member);
         reservation.setStatus(ReservationStatus.PENDING);
-        reservation.setServiceList(servicesList);
+
         reservation.setEquipmentList(equipmentList);
 
 
