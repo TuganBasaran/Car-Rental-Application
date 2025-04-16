@@ -45,7 +45,8 @@ public class Reservation {
     @JoinColumn(name = "dropOffLocationId",nullable = false)
     private Location dropOffLocation;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "car_id")
     private Car car;
 
     private LocalDateTime returnDate;
@@ -136,9 +137,6 @@ public class Reservation {
     }
 
     public void setPickUpDate(LocalDateTime pickUpDate) {
-        if (pickUpDate.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Invalid date! Pickup date can't be in the past.");
-        }
         this.pickUpDate = pickUpDate;
     }
 
@@ -148,9 +146,6 @@ public class Reservation {
     }
 
     public void setDropOffDate(LocalDateTime dropOffDate) {
-        if (dropOffDate.isBefore(pickUpDate)) {
-            throw new IllegalArgumentException("Invalid date! Drop off date can't be before pickup date.");
-        }
         this.dropOffDate = dropOffDate;
     }
 
@@ -175,9 +170,6 @@ public class Reservation {
     }
 
     public void setReturnDate(LocalDateTime returnDate) {
-        if(returnDate!=null  && returnDate.isBefore(dropOffDate)){
-            throw new IllegalArgumentException("Invalid date! Return date can't be before drop off date.");
-        }
         this.returnDate = returnDate;
     }
 

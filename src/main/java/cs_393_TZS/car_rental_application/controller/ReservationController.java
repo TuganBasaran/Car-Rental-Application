@@ -1,5 +1,6 @@
 package cs_393_TZS.car_rental_application.controller;
 
+import cs_393_TZS.car_rental_application.DTO.MemberDTO;
 import cs_393_TZS.car_rental_application.DTO.ReservationDTO;
 import cs_393_TZS.car_rental_application.DTO.ReservationRequestDTO;
 import cs_393_TZS.car_rental_application.model.ReservationStatus;
@@ -9,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @RestController
@@ -24,18 +27,17 @@ public class ReservationController {
 
 
     @PostMapping
-    public ResponseEntity<?> createReservation(@RequestBody ReservationRequestDTO reservationRequestDTO) {
+    public ResponseEntity<?> createReservation(@RequestParam Long carBarcode, @RequestParam int dayCount, @RequestParam Long memberId, @RequestParam Long pickUpLocationCode,
+                                               @RequestParam Long dropOffLocationCode, @RequestParam(required = false) List<Long> additionalEquipmentList,@RequestParam(required = false) List<Long> addtionalServiceList) {
         try {
+            ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO(carBarcode, memberId, pickUpLocationCode, dropOffLocationCode,
+                    additionalEquipmentList, addtionalServiceList, dayCount);
             ReservationDTO createdReservation = reservationService.createReservation(reservationRequestDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdReservation); // 201 Created
+            return ResponseEntity.status(HttpStatus.OK).body(createdReservation);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE) // 406 Not Acceptable
-                    .body(e.getMessage());
-        } /*catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT) // 206 Partial Content
+            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT) //206 Partial Content
                     .body(e.getMessage());
         }
-        */
     }
 
     // Get reservations by status
@@ -48,9 +50,41 @@ public class ReservationController {
         }
         return ResponseEntity.ok(reservations); // 200 OK
     }
+    @PutMapping("/{reservationNumber}/services")
+    public ResponseEntity<Boolean> addServiceToReservation(
+            @PathVariable String reservationNumber,
+            @RequestParam Long serviceCode) {
+        try {
+            boolean isAdded = reservationService.addAdditionalService(reservationNumber, serviceCode);
+            if (isAdded) {
+                return ResponseEntity.ok(true);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+        }
+    }
+    @PutMapping("/{reservationNumber}/equipments")
+    public ResponseEntity<Boolean> addEquipmentToReservation(
+            @PathVariable String reservationNumber,
+            @RequestParam Long equipmentCode) {
+        try {
+            boolean isAdded = reservationService.addAdditionalEquipment(reservationNumber, equipmentCode);
+            if (isAdded) {
+                return ResponseEntity.ok(true);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+        }
+    }
+
+
 
     // Loaning a car
-    @PatchMapping("/{reservationNumber}/loaned")
+    @PutMapping("/{reservationNumber}/loaned")
     public ResponseEntity<?> markCarAsLoaned(@PathVariable String reservationNumber) {
         try {
             reservationService.markCarAsLoaned(reservationNumber);
@@ -66,4 +100,79 @@ public class ReservationController {
         reservationService.deleteAllReservations();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204 No Content
     }
+    // Delete all reservations
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getReservationById(@PathVariable String id) {
+        try {
+            ReservationDTO reservation = reservationService.findReservationById(id);
+            return ResponseEntity.ok(reservation);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // 404 Not Found
+        }
+    }
+
+
+    //return car
+    @PutMapping("/{reservationNumber}/returned")
+    public ResponseEntity<?> markCarAsReturned(@PathVariable String reservationNumber) {
+        try {
+            boolean isReturned = reservationService.markCarAsReturned(reservationNumber);
+            if (isReturned) {
+                return ResponseEntity.ok("Reservation marked as COMPLETED, and car status updated to AVAILABLE."); // 200 OK
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reservation not found or already completed/cancelled."); // 404 Not Found
+            }
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Invalid date format. Please use the format: yyyy-MM-ddTHH:mm:ss"); // 500 Internal Server Error
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Unexpected error occurred: " + e.getMessage()); // 500 Internal Server Error
+        }
+    }
+
+
+
+
+    //cancel reservation
+    @PutMapping("/{reservationNumber}/cancelled")
+    public ResponseEntity<?> markCarAsCancelled(@PathVariable String reservationNumber) {
+        try {
+            boolean isCancelled = reservationService.markCarAsCancelled(reservationNumber);
+            if (isCancelled) {
+                return ResponseEntity.ok("Reservation marked as CANCELLED, and car status updated to AVAILABLE."); // 200 OK
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reservation not found or already completed/cancelled."); // 404 Not Found
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Unexpected error occurred: " + e.getMessage()); // 500 Internal Server Error
+        }
+    }
+
+
+
+    //delete reservation
+    @DeleteMapping("/{reservationNumber}")
+    public ResponseEntity<?> deleteReservation(@PathVariable String reservationNumber) {
+        try {
+            boolean isDeleted = reservationService.deleteReservation(reservationNumber);
+
+            if (isDeleted) {
+                return ResponseEntity.ok("Reservation deleted successfully."); // 200 OK
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Reservation not found with number: " + reservationNumber);
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage()); // 404 Not Found
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Unexpected error occurred: " + e.getMessage()); // 500 Internal Server Error
+        }
+    }
 }
+
+
+
