@@ -1,14 +1,19 @@
 package cs_393_TZS.car_rental_application.controller;
 
 import cs_393_TZS.car_rental_application.DTO.CarDTO;
+import cs_393_TZS.car_rental_application.DTO.ReservationDTO;
+import cs_393_TZS.car_rental_application.DTO.rentedCarDTO;
 import cs_393_TZS.car_rental_application.model.Car;
 import cs_393_TZS.car_rental_application.model.CarStatus;
 import cs_393_TZS.car_rental_application.model.CarType;
+import cs_393_TZS.car_rental_application.model.Reservation;
+import cs_393_TZS.car_rental_application.service.ReservationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import cs_393_TZS.car_rental_application.service.CarService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -16,9 +21,11 @@ import java.util.List;
 public class CarController {
 
     private final CarService carService;
+    private final ReservationService reservationService;
 
-    public CarController(CarService carService) {
+    public CarController(CarService carService, ReservationService reservationService) {
         this.carService = carService;
+        this.reservationService = reservationService;
     }
 
     // Add a new car
@@ -58,8 +65,12 @@ public class CarController {
     @GetMapping("/rented")
     public ResponseEntity<?> getAllRentedCars(){
         try {
-            List<CarDTO> loanedCarList = carService.findCarsByStatus(CarStatus.LOANED);
-            List<CarDTO> reservedCarList = carService.findCarsByStatus(CarStatus.RESERVED);
+            List<ReservationDTO> reservationDTOS = reservationService.getAllReservations();
+            List<rentedCarDTO> rentedCarDTOS = new ArrayList<>();
+            for(ReservationDTO reservationDTO: reservationDTOS){
+                rentedCarDTO rentedCarDTO = new rentedCarDTO(reservationDTO.get)
+            }
+
             loanedCarList.addAll(reservedCarList);
             if(loanedCarList.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There is no reserved or loaned cars at the moment");

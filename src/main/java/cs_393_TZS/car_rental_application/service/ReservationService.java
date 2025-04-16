@@ -156,6 +156,11 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
+    public List<ReservationDTO> getAllReservations(){
+        List<Reservation> reservations = reservationRepository.getAll();
+        return reservations.stream().map(this::toReservationDTO).collect(Collectors.toList());
+    }
+
     //loaning a car
     @Transactional
     public void markCarAsLoaned(String reservationNumber) {
@@ -191,6 +196,7 @@ public class ReservationService {
 
         // Add the service to the reservation
         reservation.getServiceList().add(service);
+        reservation.setTotalCost(reservation.getTotalCost() + serviceOptional.get().getPrice());
         reservationRepository.save(reservation);
 
         return true; // Service added successfully

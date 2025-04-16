@@ -10,4 +10,5 @@ import java.util.List;
 public interface ReservationRepository extends JpaRepository <Reservation, String>{
     List<Reservation> findByStatus(ReservationStatus status);
     boolean existsByCar(Car car);
+    List<Reservation> getAll();
 }
